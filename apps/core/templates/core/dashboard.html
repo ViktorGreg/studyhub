@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hey Jude! — Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          coffee: { 50: '#FAF6F1', 100: '#F3E9DD', 700: '#4A3626', 900: '#2A1E15' },
+          amber: { 600: '#B8791E', 700: '#9C641A' },
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  }
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-display { font-family: 'Fraunces', serif; }
+</style>
+</head>
+<body class="bg-white font-body text-coffee-900">
+
+<div class="max-w-5xl mx-auto px-6 py-10">
+
+  <!-- Header -->
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <h1 class="font-display text-2xl text-coffee-900">Admin Dashboard</h1>
+
+    <div class="flex items-center gap-3">
+      <button type="button" class="px-5 py-2 rounded-full text-sm font-medium bg-coffee-100 text-coffee-900 hover:bg-coffee-100/70 transition">
+        Logout
+      </button>
+      <button type="submit" form="general-info-form" class="px-5 py-2 rounded-full text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
+        Save changes
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="inline-flex items-center gap-1 p-1 mb-6 rounded-full bg-coffee-100 text-sm" id="main-tabs">
+    <button type="button" data-tab="general" class="tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm">
+      General info
+    </button>
+    <button type="button" data-tab="menu" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+      Menu items
+    </button>
+    <button type="button" data-tab="studyhub" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+      Study hub
+    </button>
+  </div>
+
+  <!-- General info panel -->
+  <div class="rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-general">
+    <h2 class="text-base font-semibold text-coffee-900 mb-6">Basic information</h2>
+
+    <form id="general-info-form" class="space-y-6" onsubmit="return false;">
+
+      <div>
+        <label for="cafe-name" class="block text-sm font-medium text-coffee-900 mb-1.5">Cafe name</label>
+        <input id="cafe-name" name="cafe_name" type="text"
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="Hey Jude! Cafe">
+      </div>
+
+      <div>
+        <label for="tagline" class="block text-sm font-medium text-coffee-900 mb-1.5">Tagline</label>
+        <input id="tagline" name="tagline" type="text"
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="Your Cozy Neighborhood Escape">
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium text-coffee-900 mb-1.5">Description</label>
+        <textarea id="description" name="description" rows="3"
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 resize-none
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="A warm, welcoming space where quality coffee meets a cozy atmosphere."></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label for="phone" class="block text-sm font-medium text-coffee-900 mb-1.5">Phone</label>
+          <input id="phone" name="phone" type="tel"
+            class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+            placeholder="+63 912 345 6789">
+        </div>
+        <div>
+          <label for="hours" class="block text-sm font-medium text-coffee-900 mb-1.5">Hours</label>
+          <input id="hours" name="hours" type="text"
+            class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+            placeholder="Open daily: 8:00 AM – 10:00 PM">
+        </div>
+      </div>
+
+      <div>
+        <label for="address" class="block text-sm font-medium text-coffee-900 mb-1.5">Address</label>
+        <input id="address" name="address" type="text"
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="W368+GMQ, San Jose Road, Zamboanga City">
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Menu items panel -->
+  <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8 relative" id="panel-menu">
+
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="category-tabs">
+        <button type="button" data-category="coffee" class="cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm">
+          Coffee
+        </button>
+        <button type="button" data-category="non-coffee" class="cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+          Non-Coffee
+        </button>
+        <button type="button" data-category="desserts" class="cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+          Desserts
+        </button>
+        <button type="button" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          Add category
+        </button>
+      </div>
+
+      <button type="button" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        Add item
+      </button>
+    </div>
+
+    <h2 class="text-base font-semibold text-coffee-900 mb-4" id="category-heading">Coffee</h2>
+
+    <div class="space-y-4" id="menu-items-list">
+
+      <!-- Item card -->
+      <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-coffee-900/10 bg-coffee-50">
+        <div class="flex flex-col items-start gap-2 shrink-0">
+          <div class="w-24 h-24 rounded-lg bg-coffee-100 flex items-center justify-center text-coffee-900/30">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <button type="button" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition">
+            Change photo
+          </button>
+        </div>
+
+        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Name</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Signature Coffee">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Price</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="₱140">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Description</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Rich espresso with silky steamed milk">
+          </div>
+        </div>
+      </div>
+
+      <!-- Item card -->
+      <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-coffee-900/10 bg-coffee-50">
+        <div class="flex flex-col items-start gap-2 shrink-0">
+          <div class="w-24 h-24 rounded-lg bg-coffee-100 flex items-center justify-center text-coffee-900/30">
+            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <button type="button" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition">
+            Change photo
+          </button>
+        </div>
+
+        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Name</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Signature Coffee">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Price</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="₱140">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Description</label>
+            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Rich espresso with silky steamed milk">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating add button -->
+    <button type="button" class="absolute -bottom-5 -right-5 w-12 h-12 rounded-full bg-coffee-900 text-white flex items-center justify-center shadow-lg hover:bg-coffee-700 transition">
+      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Study hub panel (placeholder) -->
+  <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-studyhub">
+    <p class="text-coffee-900/50 text-sm">Study hub settings go here.</p>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching: show/hide panels, toggle active tab styling.
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const panels = { general: 'panel-general', menu: 'panel-menu', studyhub: 'panel-studyhub' };
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.className = 'tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
+      btn.className = 'tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+
+      Object.values(panels).forEach(id => document.getElementById(id).classList.add('hidden'));
+      document.getElementById(panels[btn.dataset.tab]).classList.remove('hidden');
+    });
+  });
+
+  // Category switching within Menu items (label only — wire up real filtering in Django).
+  const catButtons = document.querySelectorAll('.cat-btn');
+  const categoryHeading = document.getElementById('category-heading');
+
+  catButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catButtons.forEach(b => b.className = 'cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
+      btn.className = 'cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+      categoryHeading.textContent = btn.textContent.trim();
+    });
+  });
+</script>
+
+</body>
+</html>
