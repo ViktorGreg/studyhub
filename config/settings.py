@@ -41,9 +41,11 @@ INSTALLED_APPS = [
 'django.contrib.staticfiles',
 'apps.core',
 'apps.users',
+'apps.menu',
 ]
 
 AUTH_USER_MODEL = 'users.Account'
+LOGIN_URL = 'admin_login'
 
 MIDDLEWARE = [
 'django.middleware.security.SecurityMiddleware',
@@ -125,6 +127,11 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Media files (user-uploaded content, e.g. menu item photos)
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Email
 

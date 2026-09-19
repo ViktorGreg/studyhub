@@ -39,16 +39,38 @@
 <div class="max-w-5xl mx-auto px-6 py-10">
 
   <!-- Header -->
+   {% if messages %}
+  {% for message in messages %}
+    <div class="mb-4 px-4 py-2 rounded-lg text-sm {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
   <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
     <h1 class="font-display text-2xl text-coffee-900">Admin Dashboard</h1>
 
     <div class="flex items-center gap-3">
-      <button type="button" class="px-5 py-2 rounded-full text-sm font-medium bg-coffee-100 text-coffee-900 hover:bg-coffee-100/70 transition">
-        Logout
-      </button>
       <button type="submit" form="general-info-form" class="px-5 py-2 rounded-full text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
         Save changes
       </button>
+
+      <div class="relative" id="profile-menu-wrap">
+        <button type="button" id="profile-menu-btn" title="Profile" class="w-10 h-10 rounded-full bg-coffee-100 flex items-center justify-center text-coffee-900/60 hover:bg-coffee-100/70 hover:text-coffee-900 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="8" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-coffee-900/10 bg-white shadow-lg py-1.5 z-10">
+          <a href="/profile/" class="block px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Profile</a>
+          <a href="/settings/" class="block px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Settings</a>
+          <form method="POST" action="{% url 'admin_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Logout</button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -72,55 +94,79 @@
   <div class="rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-general">
     <h2 class="text-base font-semibold text-coffee-900 mb-6">Basic information</h2>
 
-    <form id="general-info-form" class="space-y-6" onsubmit="return false;">
+    <form id="general-info-form" method="POST" action="{% url 'core:dashboard' %}" class="space-y-6">
+      {% csrf_token %}
 
       <div>
         <label for="cafe-name" class="block text-sm font-medium text-coffee-900 mb-1.5">Cafe name</label>
         <input id="cafe-name" name="cafe_name" type="text"
+          value="{{ form.cafe_name.value|default:'' }}"
           class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
-                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+                focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
           placeholder="Hey Jude! Cafe">
+        {% if form.cafe_name.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.cafe_name.errors.0 }}</p>
+        {% endif %}
       </div>
 
       <div>
         <label for="tagline" class="block text-sm font-medium text-coffee-900 mb-1.5">Tagline</label>
         <input id="tagline" name="tagline" type="text"
+          value="{{ form.tagline.value|default:'' }}"
           class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
-                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+                focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
           placeholder="Your Cozy Neighborhood Escape">
+        {% if form.tagline.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.tagline.errors.0 }}</p>
+        {% endif %}
       </div>
 
       <div>
         <label for="description" class="block text-sm font-medium text-coffee-900 mb-1.5">Description</label>
         <textarea id="description" name="description" rows="3"
           class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 resize-none
-                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
-          placeholder="A warm, welcoming space where quality coffee meets a cozy atmosphere."></textarea>
+                focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="A warm, welcoming space where quality coffee meets a cozy atmosphere.">{{ form.description.value|default:'' }}</textarea>
+        {% if form.description.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.description.errors.0 }}</p>
+        {% endif %}
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <label for="phone" class="block text-sm font-medium text-coffee-900 mb-1.5">Phone</label>
           <input id="phone" name="phone" type="tel"
+            value="{{ form.phone.value|default:'' }}"
             class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
-                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+                  focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
             placeholder="+63 912 345 6789">
+          {% if form.phone.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.phone.errors.0 }}</p>
+          {% endif %}
         </div>
         <div>
           <label for="hours" class="block text-sm font-medium text-coffee-900 mb-1.5">Hours</label>
           <input id="hours" name="hours" type="text"
+            value="{{ form.hours.value|default:'' }}"
             class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
-                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+                  focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
             placeholder="Open daily: 8:00 AM – 10:00 PM">
+          {% if form.hours.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.hours.errors.0 }}</p>
+          {% endif %}
         </div>
       </div>
 
       <div>
         <label for="address" class="block text-sm font-medium text-coffee-900 mb-1.5">Address</label>
         <input id="address" name="address" type="text"
+          value="{{ form.address.value|default:'' }}"
           class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
-                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+                focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
           placeholder="W368+GMQ, San Jose Road, Zamboanga City">
+        {% if form.address.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.address.errors.0 }}</p>
+        {% endif %}
       </div>
 
     </form>
@@ -131,91 +177,113 @@
 
     <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
       <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="category-tabs">
-        <button type="button" data-category="coffee" class="cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm">
-          Coffee
-        </button>
-        <button type="button" data-category="non-coffee" class="cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-          Non-Coffee
-        </button>
-        <button type="button" data-category="desserts" class="cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-          Desserts
-        </button>
-        <button type="button" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+        {% for category in categories %}
+          <div class="flex items-center">
+            <button type="button" data-category="{{ category.id }}"
+              class="cat-btn px-5 py-2 rounded-full {% if forloop.first %}bg-white text-coffee-900 font-medium shadow-sm{% else %}text-coffee-900/60 hover:text-coffee-900 transition{% endif %}">
+              {{ category.name }}
+            </button>
+            <form method="POST" action="{% url 'delete_category' category.id %}" onsubmit="return confirm('Delete {{ category.name }} and all its items?');">
+              {% csrf_token %}
+              <button type="submit" class="text-coffee-900/30 hover:text-red-600 text-xs px-1" title="Delete category">✕</button>
+            </form>
+          </div>
+        {% endfor %}
+
+        <button type="button" id="show-add-category" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
           Add category
         </button>
       </div>
 
-      <button type="button" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">
+      <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
         Add item
       </button>
     </div>
 
-    <h2 class="text-base font-semibold text-coffee-900 mb-4" id="category-heading">Coffee</h2>
+    <!-- Add category form (hidden by default) -->
+    <form method="POST" action="{% url 'add_category' %}" id="add-category-form" class="hidden mb-6 flex gap-3 p-4 rounded-xl bg-coffee-50">
+      {% csrf_token %}
+      <input type="text" name="name" required placeholder="Category name (e.g. Desserts)"
+        class="flex-1 px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition">Create</button>
+    </form>
 
-    <div class="space-y-4" id="menu-items-list">
+    <!-- Add item form (hidden by default) -->
+    <form method="POST" action="{% url 'add_item' %}" enctype="multipart/form-data" id="add-item-form" class="hidden mb-6 p-4 rounded-xl bg-coffee-50 space-y-3">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <select name="category" class="px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm">
+          {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        <input type="text" name="name" required placeholder="Item name" class="px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm">
+        <input type="number" step="0.01" name="price" required placeholder="Price" class="px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm">
+        <input type="file" name="image" class="px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm">
+      </div>
+      <input type="text" name="description" placeholder="Description" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition">Add item</button>
+    </form>
 
-      <!-- Item card -->
-      <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-coffee-900/10 bg-coffee-50">
-        <div class="flex flex-col items-start gap-2 shrink-0">
-          <div class="w-24 h-24 rounded-lg bg-coffee-100 flex items-center justify-center text-coffee-900/30">
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <button type="button" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition">
-            Change photo
-          </button>
-        </div>
+    {% for category in categories %}
+      <div class="category-panel {% if not forloop.first %}hidden{% endif %}" id="category-panel-{{ category.id }}">
+        <h2 class="text-base font-semibold text-coffee-900 mb-4">{{ category.name }}</h2>
 
-        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Name</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Signature Coffee">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Price</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="₱140">
-          </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Description</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Rich espresso with silky steamed milk">
-          </div>
+        <div class="space-y-4">
+          {% for item in category.items.all %}
+            <form method="POST" action="{% url 'edit_item' item.id %}" enctype="multipart/form-data"
+              class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-coffee-900/10 bg-coffee-50">
+              {% csrf_token %}
+
+              <div class="flex flex-col items-start gap-2 shrink-0">
+                <div class="w-24 h-24 rounded-lg bg-coffee-100 flex items-center justify-center text-coffee-900/30 overflow-hidden">
+                  {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                  {% else %}
+                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  {% endif %}
+                </div>
+                <label class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition cursor-pointer">
+                  Change photo
+                  <input type="file" name="image" class="hidden">
+                </label>
+              </div>
+
+              <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-medium text-coffee-900/70 mb-1">Name</label>
+                  <input type="text" name="name" value="{{ item.name }}" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-coffee-900/70 mb-1">Price</label>
+                  <input type="text" name="price" value="{{ item.price }}" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-coffee-900/70 mb-1">Description</label>
+                  <input type="text" name="description" value="{{ item.description }}" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+                </div>
+                <input type="hidden" name="category" value="{{ category.id }}">
+                <div class="sm:col-span-2 flex gap-2">
+                  <button type="submit" class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">Save item</button>
+                  <button type="submit" formaction="{% url 'delete_item' item.id %}" formnovalidate
+                    onclick="return confirm('Delete {{ item.name }}?');"
+                    class="px-4 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </form>
+          {% empty %}
+            <p class="text-sm text-coffee-900/40">No items in this category yet.</p>
+          {% endfor %}
         </div>
       </div>
+    {% empty %}
+      <p class="text-sm text-coffee-900/40">No categories yet — add one to get started.</p>
+    {% endfor %}
 
-      <!-- Item card -->
-      <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-coffee-900/10 bg-coffee-50">
-        <div class="flex flex-col items-start gap-2 shrink-0">
-          <div class="w-24 h-24 rounded-lg bg-coffee-100 flex items-center justify-center text-coffee-900/30">
-            <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <button type="button" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition">
-            Change photo
-          </button>
-        </div>
-
-        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Name</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Signature Coffee">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Price</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="₱140">
-          </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-medium text-coffee-900/70 mb-1">Description</label>
-            <input type="text" class="w-full px-3 py-2 rounded-lg border border-coffee-900/15 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" placeholder="Rich espresso with silky steamed milk">
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Floating add button -->
-    <button type="button" class="absolute -bottom-5 -right-5 w-12 h-12 rounded-full bg-coffee-900 text-white flex items-center justify-center shadow-lg hover:bg-coffee-700 transition">
-      <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-    </button>
   </div>
 
   <!-- Study hub panel (placeholder) -->
@@ -317,21 +385,29 @@
     });
   });
 
-  // Category switching within Menu items (label only — wire up real filtering in Django).
+  // Category switching within Menu items.
   const catButtons = document.querySelectorAll('.cat-btn');
-  const categoryHeading = document.getElementById('category-heading');
 
   catButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       catButtons.forEach(b => b.className = 'cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
       btn.className = 'cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
-      categoryHeading.textContent = btn.textContent.trim();
 
-      const menuList = document.getElementById('menu-items-list');
-      menuList.classList.remove('glide-in');
-      void menuList.offsetWidth; // restart animation
-      menuList.classList.add('glide-in');
+      document.querySelectorAll('.category-panel').forEach(p => p.classList.add('hidden'));
+      const shownPanel = document.getElementById('category-panel-' + btn.dataset.category);
+      shownPanel.classList.remove('hidden');
+      shownPanel.classList.remove('glide-in');
+      void shownPanel.offsetWidth;
+      shownPanel.classList.add('glide-in');
     });
+  });
+
+  // Toggle Add category / Add item forms
+  document.getElementById('show-add-category').addEventListener('click', () => {
+    document.getElementById('add-category-form').classList.toggle('hidden');
+  });
+  document.getElementById('show-add-item').addEventListener('click', () => {
+    document.getElementById('add-item-form').classList.toggle('hidden');
   });
 
   // Staff form: toggle password visibility (same pattern as the login page).
@@ -344,6 +420,21 @@
     staffPasswordInput.type = isHidden ? 'text' : 'password';
     staffToggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
     staffEyeIcon.style.opacity = isHidden ? '0.6' : '1';
+  });
+
+  // Profile menu: click to toggle, click outside to close.
+  const profileBtn = document.getElementById('profile-menu-btn');
+  const profileMenu = document.getElementById('profile-menu');
+
+  profileBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    profileMenu.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.classList.contains('hidden') && !document.getElementById('profile-menu-wrap').contains(e.target)) {
+      profileMenu.classList.add('hidden');
+    }
   });
 </script>
 
