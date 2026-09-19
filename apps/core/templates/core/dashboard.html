@@ -26,6 +26,12 @@
 <style>
   body { font-family: 'Inter', sans-serif; }
   .font-display { font-family: 'Fraunces', serif; }
+
+  @keyframes glideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .glide-in { animation: glideIn 0.18s ease-out; }
 </style>
 </head>
 <body class="bg-white font-body text-coffee-900">
@@ -56,6 +62,9 @@
     </button>
     <button type="button" data-tab="studyhub" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
       Study hub
+    </button>
+    <button type="button" data-tab="staff" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+      Staff
     </button>
   </div>
 
@@ -214,12 +223,85 @@
     <p class="text-coffee-900/50 text-sm">Study hub settings go here.</p>
   </div>
 
+  <!-- Staff panel -->
+  <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-staff">
+    <h2 class="text-base font-semibold text-coffee-900 mb-6">Add staff account</h2>
+
+    <form id="staff-form" class="space-y-6" onsubmit="return false;">
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <label for="staff-first-name" class="block text-sm font-medium text-coffee-900 mb-1.5">First name</label>
+          <input id="staff-first-name" name="first_name" type="text" required
+            class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+            placeholder="Juan">
+        </div>
+        <div>
+          <label for="staff-last-name" class="block text-sm font-medium text-coffee-900 mb-1.5">Last name</label>
+          <input id="staff-last-name" name="last_name" type="text" required
+            class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+            placeholder="Dela Cruz">
+        </div>
+      </div>
+
+      <div>
+        <label for="staff-phone" class="block text-sm font-medium text-coffee-900 mb-1.5">Phone number</label>
+        <input id="staff-phone" name="phone" type="tel" required
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="+63 912 345 6789">
+      </div>
+
+      <div>
+        <label for="staff-username" class="block text-sm font-medium text-coffee-900 mb-1.5">Username</label>
+        <input id="staff-username" name="username" type="text" required
+          class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+          placeholder="e.g. barista02">
+      </div>
+
+      <div>
+        <label for="staff-password" class="block text-sm font-medium text-coffee-900 mb-1.5">Password</label>
+        <div class="relative">
+          <input id="staff-password" name="password" type="password" required
+            class="w-full px-4 py-2.5 pr-11 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
+                   focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+            placeholder="••••••••">
+          <button type="button" id="toggleStaffPassword" aria-label="Show password"
+            class="absolute inset-y-0 right-0 flex items-center px-3.5 text-coffee-900/40 hover:text-coffee-900/70">
+            <svg id="staffEyeIcon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="px-5 py-2.5 rounded-lg bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">
+        Add staff account
+      </button>
+
+    </form>
+
+    <hr class="my-8 border-coffee-900/10">
+
+    <h2 class="text-base font-semibold text-coffee-900 mb-4">Current staff</h2>
+    <div class="space-y-2" id="staff-list">
+      <div class="flex items-center justify-between p-3 rounded-lg bg-coffee-50 text-sm">
+        <span class="text-coffee-900/50">No staff accounts added yet.</span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
   // Tab switching: show/hide panels, toggle active tab styling.
   const tabButtons = document.querySelectorAll('.tab-btn');
-  const panels = { general: 'panel-general', menu: 'panel-menu', studyhub: 'panel-studyhub' };
+  const panels = { general: 'panel-general', menu: 'panel-menu', studyhub: 'panel-studyhub', staff: 'panel-staff' };
 
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -227,7 +309,11 @@
       btn.className = 'tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
 
       Object.values(panels).forEach(id => document.getElementById(id).classList.add('hidden'));
-      document.getElementById(panels[btn.dataset.tab]).classList.remove('hidden');
+      const shownPanel = document.getElementById(panels[btn.dataset.tab]);
+      shownPanel.classList.remove('hidden');
+      shownPanel.classList.remove('glide-in');
+      void shownPanel.offsetWidth; // restart animation
+      shownPanel.classList.add('glide-in');
     });
   });
 
@@ -240,7 +326,24 @@
       catButtons.forEach(b => b.className = 'cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
       btn.className = 'cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
       categoryHeading.textContent = btn.textContent.trim();
+
+      const menuList = document.getElementById('menu-items-list');
+      menuList.classList.remove('glide-in');
+      void menuList.offsetWidth; // restart animation
+      menuList.classList.add('glide-in');
     });
+  });
+
+  // Staff form: toggle password visibility (same pattern as the login page).
+  const staffToggleBtn = document.getElementById('toggleStaffPassword');
+  const staffPasswordInput = document.getElementById('staff-password');
+  const staffEyeIcon = document.getElementById('staffEyeIcon');
+
+  staffToggleBtn.addEventListener('click', () => {
+    const isHidden = staffPasswordInput.type === 'password';
+    staffPasswordInput.type = isHidden ? 'text' : 'password';
+    staffToggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    staffEyeIcon.style.opacity = isHidden ? '0.6' : '1';
   });
 </script>
 

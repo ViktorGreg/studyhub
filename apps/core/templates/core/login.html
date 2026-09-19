@@ -61,8 +61,8 @@
       <h2 class="font-display text-2xl text-coffee-900 mb-1">Admin sign in</h2>
       <p class="text-sm text-coffee-900/60 mb-8">Enter your staff credentials to continue.</p>
 
-      <form class="space-y-5" onsubmit="return false;">
-
+      <form method="POST" action="{% url 'admin_login' %}" class="space-y-5">
+        {% csrf_token %}
         <div>
           <label for="username" class="block text-sm font-medium text-coffee-900 mb-1.5">Username</label>
           <input
