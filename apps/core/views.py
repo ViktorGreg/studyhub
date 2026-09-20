@@ -4,10 +4,14 @@ from django.contrib import messages
 from .models import CafeSettings
 from .forms import CafeSettingsForm
 from apps.menu.models import MenuCategory
+from apps.users.models import Account
+from apps.studyhub.models import StudyHubPlan
 
 # Create your views here.
 def home(request):
-  return render(request, 'core/home.html')
+  return render(request, 'core/home.html', {
+    'plans': StudyHubPlan.objects.filter(is_active=True),
+  })
 
 def login(request):
   return render(request, 'core/login.html')
@@ -26,8 +30,10 @@ def dashboard(request):
         form = CafeSettingsForm(instance=settings_obj)
 
     categories = MenuCategory.objects.prefetch_related('items')
+    staff_list = Account.objects.filter(role='STAFF')
 
     return render(request, 'core/dashboard.html', {
         'form': form,
         'categories': categories,
+        'staff_list': staff_list,
     })

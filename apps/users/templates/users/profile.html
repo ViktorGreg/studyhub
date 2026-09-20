@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hey Jude! — Profile</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          coffee: { 50: '#FAF6F1', 100: '#F3E9DD', 700: '#4A3626', 900: '#2A1E15' },
+          amber: { 600: '#B8791E', 700: '#9C641A' },
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+        },
+      },
+    },
+  }
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-display { font-family: 'Fraunces', serif; }
+</style>
+</head>
+<body class="bg-coffee-50 font-body text-coffee-900">
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-4 px-4 py-2 rounded-lg text-sm {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="rounded-2xl border border-coffee-900/10 bg-white shadow-sm overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Left sidebar -->
+    <div class="md:w-80 shrink-0 bg-coffee-900 text-coffee-50 p-6 sm:p-8 flex flex-col">
+      <a href="{% url 'core:dashboard' %}" class="flex items-center gap-2 text-sm font-medium text-coffee-100/80 hover:text-white transition mb-8 md:mb-10">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Dashboard
+      </a>
+
+      <div class="flex flex-col items-center text-center flex-1">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-amber-600 flex items-center justify-center text-3xl sm:text-4xl font-display mb-5 ring-4 ring-white/10">
+          {{ target_user.first_name|slice:":1" }}{{ target_user.last_name|slice:":1" }}
+        </div>
+
+        <h2 class="font-display text-lg sm:text-xl break-words">{{ target_user.first_name }} {{ target_user.last_name }}</h2>
+        <p class="text-sm text-coffee-100/70 mt-1">{{ target_user.get_role_display }}</p>
+        <p class="text-sm text-coffee-100/50">Hey Jude! Cafe</p>
+
+        <div class="w-full mt-6 px-4 py-2.5 rounded-lg bg-white/10 text-sm font-medium break-all">
+          @{{ target_user.username }}
+        </div>
+      </div>
+
+      {% if is_own_profile %}
+        <div class="mt-4 pt-4 border-t border-white/10">
+          <form method="POST" action="{% url 'admin_logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="w-full py-2.5 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition">
+              Logout
+            </button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Right panel -->
+    <div class="flex-1 p-6 sm:p-8">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-8">
+        <h1 class="font-display text-xl sm:text-2xl text-coffee-900">
+          {% if is_own_profile %}Edit Profile{% else %}Staff Profile{% endif %}
+        </h1>
+        <button type="button" id="edit-toggle-btn" class="px-5 py-2 rounded-full text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
+          Edit
+        </button>
+      </div>
+
+      <form id="profile-form" method="POST" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-sm font-medium text-coffee-900 mb-1.5">Full name</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input type="text" name="first_name" value="{{ target_user.first_name }}" disabled
+              class="profile-field w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+            <input type="text" name="last_name" value="{{ target_user.last_name }}" disabled
+              class="profile-field w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-coffee-900 mb-1.5">Username</label>
+            <input type="text" name="username" value="{{ target_user.username }}" disabled
+              class="profile-field w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-coffee-900 mb-1.5">Phone number</label>
+            <input type="tel" name="phone_num" value="{{ target_user.phone_num }}" disabled
+              class="profile-field w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+          </div>
+        </div>
+
+        {% if can_edit_password %}
+          <div>
+            <label class="block text-sm font-medium text-coffee-900 mb-1.5">
+              New password
+              {% if not is_own_profile %}<span class="text-coffee-900/40 font-normal">(admin only)</span>{% endif %}
+            </label>
+            <input type="password" name="password" placeholder="Leave blank to keep current password" disabled
+              class="profile-field w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+          </div>
+        {% endif %}
+
+        <button type="submit" id="save-btn" class="hidden w-full sm:w-auto px-5 py-2.5 rounded-lg bg-coffee-900 text-white text-sm font-medium hover:bg-coffee-700 transition">
+          Save changes
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const editBtn = document.getElementById('edit-toggle-btn');
+  const saveBtn = document.getElementById('save-btn');
+  const fields = document.querySelectorAll('.profile-field');
+  let editing = false;
+
+  editBtn.addEventListener('click', () => {
+    editing = !editing;
+    fields.forEach(f => f.disabled = !editing);
+    saveBtn.classList.toggle('hidden', !editing);
+    editBtn.textContent = editing ? 'Cancel' : 'Edit';
+  });
+</script>
+
+</body>
+</html>

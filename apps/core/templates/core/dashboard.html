@@ -63,7 +63,7 @@
         </button>
 
         <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-coffee-900/10 bg-white shadow-lg py-1.5 z-10">
-          <a href="/profile/" class="block px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Profile</a>
+          <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Profile</a>
           <a href="/settings/" class="block px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition">Settings</a>
           <form method="POST" action="{% url 'admin_logout' %}">
             {% csrf_token %}
@@ -85,9 +85,11 @@
     <button type="button" data-tab="studyhub" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
       Study hub
     </button>
-    <button type="button" data-tab="staff" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-      Staff
-    </button>
+    {% if request.user.role == 'ADMIN' %}
+      <button type="button" data-tab="staff" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
+        Staff
+      </button>
+    {% endif %}
   </div>
 
   <!-- General info panel -->
@@ -292,10 +294,12 @@
   </div>
 
   <!-- Staff panel -->
+  {% if request.user.role == 'ADMIN' %}
   <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-staff">
     <h2 class="text-base font-semibold text-coffee-900 mb-6">Add staff account</h2>
 
-    <form id="staff-form" class="space-y-6" onsubmit="return false;">
+    <form id="staff-form" method="POST" action="{% url 'add_staff' %}" class="space-y-6">
+    {% csrf_token %}
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
@@ -316,7 +320,7 @@
 
       <div>
         <label for="staff-phone" class="block text-sm font-medium text-coffee-900 mb-1.5">Phone number</label>
-        <input id="staff-phone" name="phone" type="tel" required
+        <input id="staff-phone" name="phone_num" type="tel" required
           class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
                  focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
           placeholder="+63 912 345 6789">
@@ -358,11 +362,27 @@
 
     <h2 class="text-base font-semibold text-coffee-900 mb-4">Current staff</h2>
     <div class="space-y-2" id="staff-list">
-      <div class="flex items-center justify-between p-3 rounded-lg bg-coffee-50 text-sm">
-        <span class="text-coffee-900/50">No staff accounts added yet.</span>
-      </div>
+      {% for staff in staff_list %}
+        <div class="flex items-center justify-between p-3 rounded-lg bg-coffee-50 text-sm hover:bg-coffee-100/60 transition">
+          <a href="{% url 'staff_detail' staff.pk %}" class="flex-1">
+            <span class="font-medium text-coffee-900">{{ staff.first_name }} {{ staff.last_name }}</span>
+            <span class="text-coffee-900/40">— {{ staff.username }} · {{ staff.phone_num }}</span>
+          </a>
+          {% if request.user.role == 'ADMIN' %}
+            <form method="POST" action="{% url 'delete_staff' staff.pk %}" onsubmit="return confirm('Remove {{ staff.first_name }} {{ staff.last_name }}?');">
+              {% csrf_token %}
+              <button type="submit" class="text-coffee-900/30 hover:text-red-600 text-xs px-2" title="Remove staff">✕</button>
+            </form>
+          {% endif %}
+        </div>
+      {% empty %}
+        <div class="flex items-center justify-between p-3 rounded-lg bg-coffee-50 text-sm">
+          <span class="text-coffee-900/50">No staff accounts added yet.</span>
+        </div>
+      {% endfor %}
     </div>
   </div>
+  {% endif %}
 
 </div>
 
@@ -376,8 +396,13 @@
       tabButtons.forEach(b => b.className = 'tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
       btn.className = 'tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
 
-      Object.values(panels).forEach(id => document.getElementById(id).classList.add('hidden'));
+      Object.values(panels).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+
       const shownPanel = document.getElementById(panels[btn.dataset.tab]);
+      if (!shownPanel) return; // tab has no matching panel (e.g. staff hidden for non-admins)
       shownPanel.classList.remove('hidden');
       shownPanel.classList.remove('glide-in');
       void shownPanel.offsetWidth; // restart animation
@@ -415,12 +440,14 @@
   const staffPasswordInput = document.getElementById('staff-password');
   const staffEyeIcon = document.getElementById('staffEyeIcon');
 
-  staffToggleBtn.addEventListener('click', () => {
-    const isHidden = staffPasswordInput.type === 'password';
-    staffPasswordInput.type = isHidden ? 'text' : 'password';
-    staffToggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
-    staffEyeIcon.style.opacity = isHidden ? '0.6' : '1';
-  });
+  if (staffToggleBtn && staffPasswordInput && staffEyeIcon) {
+    staffToggleBtn.addEventListener('click', () => {
+      const isHidden = staffPasswordInput.type === 'password';
+      staffPasswordInput.type = isHidden ? 'text' : 'password';
+      staffToggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      staffEyeIcon.style.opacity = isHidden ? '0.6' : '1';
+    });
+  }
 
   // Profile menu: click to toggle, click outside to close.
   const profileBtn = document.getElementById('profile-menu-btn');

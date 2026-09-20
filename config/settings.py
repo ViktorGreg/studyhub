@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 'apps.core',
 'apps.users',
 'apps.menu',
+'apps.studyhub',
 ]
 
 AUTH_USER_MODEL = 'users.Account'
