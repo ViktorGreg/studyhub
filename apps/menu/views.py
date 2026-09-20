@@ -4,7 +4,16 @@ from django.shortcuts import redirect, get_object_or_404
 from .models import MenuCategory, MenuItem
 from .forms import MenuCategoryForm, MenuItemForm
 from django.contrib import messages
+from django.http import JsonResponse
 
+@login_required
+def toggle_bestseller(request, item_id):
+    item = get_object_or_404(MenuItem, pk=item_id)
+    if request.method == 'POST':
+        item.is_bestseller = not item.is_bestseller
+        item.save()
+        return JsonResponse({'success': True, 'is_bestseller': item.is_bestseller})
+    return JsonResponse({'success': False}, status=405)
 
 @login_required
 def add_category(request):

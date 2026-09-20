@@ -39,7 +39,7 @@
         <path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="font-display text-lg font-semibold">Hey Jude!</span>
+      <span class="font-display text-lg font-semibold">{{ settings.cafe_name|default:"Hey Jude!" }}</span>
     </div>
 
     <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-white/90">
@@ -73,12 +73,11 @@
     </div>
 
     <h1 class="font-display text-4xl sm:text-6xl font-semibold leading-tight max-w-3xl">
-      Your Cozy<br>
-      <span class="text-amber-600">Neighborhood</span> Escape.
+      {{ settings.tagline|default:"Your Cozy Neighborhood Escape." }}
     </h1>
 
     <p class="mt-6 max-w-xl text-white/85 leading-relaxed">
-      A warm, welcoming space where quality coffee meets a cozy atmosphere. Whether you're here for a quick morning brew, a quiet afternoon of work, or catching up with friends, we have the perfect spot for you.
+      {{ settings.description|default:"A warm, welcoming space where quality coffee meets a cozy atmosphere. Whether you're here for a quick morning brew, a quiet afternoon of work, or catching up with friends, we have the perfect spot for you." }}
     </p>
 
     <div class="mt-8 flex flex-wrap items-center gap-3">
@@ -153,29 +152,40 @@
   <p class="text-coffee-900/60 mb-8">Experience our carefully selected beans and daily fresh pastries.</p>
 
   <div class="inline-flex items-center gap-1 p-1 mb-10 rounded-full bg-coffee-100 text-sm" id="menu-tabs">
-    <button type="button" data-tab="coffee" class="menu-tab-btn px-6 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm">Coffee</button>
-    <button type="button" data-tab="non-coffee" class="menu-tab-btn px-6 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">Non-Coffee</button>
-    <button type="button" data-tab="dessert" class="menu-tab-btn px-6 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">Dessert</button>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 text-left" id="menu-items-grid">
-    {% for item in menu_items %}
-      <div class="flex items-center gap-4">
-        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-600 to-coffee-700 shrink-0 overflow-hidden">
-          {% if item.image %}<img src="{{ item.image.url }}" class="w-full h-full object-cover">{% endif %}
-        </div>
-        <div class="flex-1">
-          <p class="font-medium text-coffee-900">{{ item.name }}</p>
-          <p class="text-sm text-coffee-900/50">{{ item.description }}</p>
-        </div>
-        <span class="font-semibold text-coffee-900 shrink-0">₱{{ item.price }}</span>
-      </div>
-    {% empty %}
-      <p class="text-sm text-coffee-900/40 sm:col-span-2">Menu items will appear here once added in the admin dashboard.</p>
+    {% for category in categories %}
+      <button type="button" data-menu-category="{{ category.id }}"
+        class="menu-tab-btn px-6 py-2 rounded-full {% if forloop.first %}bg-white text-coffee-900 font-medium shadow-sm{% else %}text-coffee-900/60 hover:text-coffee-900 transition{% endif %}">
+        {{ category.name }}
+      </button>
     {% endfor %}
   </div>
 
-  <a href="#" class="inline-block mt-8 text-sm font-medium text-coffee-900 underline underline-offset-4">View full menu</a>
+  {% for category in categories %}
+    <div class="menu-category-panel {% if not forloop.first %}hidden{% endif %} grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 text-left" id="menu-category-{{ category.id }}">
+      {% for item in category.items.all %}
+        {% if item.is_available and item.is_bestseller %}
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-600 to-coffee-700 shrink-0 overflow-hidden">
+              {% if item.image %}<img src="{{ item.image.url }}" class="w-full h-full object-cover">{% endif %}
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-coffee-900">{{ item.name }}</p>
+              <p class="text-sm text-coffee-900/50">{{ item.description }}</p>
+            </div>
+            <span class="font-semibold text-coffee-900 shrink-0">₱{{ item.price }}</span>
+          </div>
+        {% endif %}
+      {% empty %}
+        <p class="text-sm text-coffee-900/40 sm:col-span-2">No items in this category yet.</p>
+      {% endfor %}
+    </div>
+  {% empty %}
+    <p class="text-sm text-coffee-900/40">Menu items will appear here once added in the admin dashboard.</p>
+  {% endfor %}
+
+  <button type="button" id="view-all-menu-btn" class="inline-block mt-8 px-6 py-2.5 rounded-full bg-coffee-900 text-white text-sm font-medium hover:bg-coffee-700 transition">
+    View all menu
+  </button>
 </section>
 
 <!-- Study Hub -->
@@ -303,9 +313,9 @@
     <div>
       <div class="flex items-center gap-2 mb-3">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9h13a2 2 0 0 1 2 2 4 4 0 0 1-4 4h-1" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 9v6a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-1" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span class="font-display font-semibold">Hey, Jude! Cafe</span>
+        <span class="font-display font-semibold">{{ settings.cafe_name|default:"Hey, Jude! Cafe" }}</span>
       </div>
-      <p class="text-sm text-white/50">Your Cozy Neighborhood Coffee Destination</p>
+      <p class="text-sm text-white/50">{{ settings.tagline|default:"Your Cozy Neighborhood Coffee Destination" }}</p>
     </div>
 
     <div>
@@ -330,6 +340,66 @@
     © 2026 Hey, Jude! Cafe. All rights reserved.
   </div>
 </footer>
+
+<!-- Full Menu Modal -->
+<div id="full-menu-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-4 py-4 sm:py-6">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" id="full-menu-backdrop"></div>
+
+  <div class="relative w-full max-w-2xl max-h-[90vh] sm:max-h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between px-5 sm:px-6 py-4 sm:py-5 border-b border-coffee-900/10 shrink-0">
+      <div class="min-w-0">
+        <h3 class="font-display text-xl sm:text-2xl font-semibold text-coffee-900">Full Menu</h3>
+        <p class="text-xs text-coffee-900/50 mt-0.5">Everything we brew, bake, and serve.</p>
+      </div>
+      <button type="button" id="close-full-menu-btn" class="w-9 h-9 rounded-full bg-coffee-100 flex items-center justify-center text-coffee-900/60 hover:bg-coffee-100/70 hover:text-coffee-900 transition shrink-0 ml-3">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Category tabs — horizontally scrollable on mobile -->
+    <div class="px-5 sm:px-6 pt-4 sm:pt-5 shrink-0">
+      <div class="overflow-x-auto -mx-5 sm:-mx-6 px-5 sm:px-6 pb-1">
+        <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm whitespace-nowrap" id="full-menu-tabs">
+          {% for category in categories %}
+            <button type="button" data-full-menu-category="{{ category.id }}"
+              class="full-menu-tab-btn px-4 sm:px-5 py-1.5 rounded-full {% if forloop.first %}bg-white text-coffee-900 font-medium shadow-sm{% else %}text-coffee-900/60 hover:text-coffee-900 transition{% endif %}">
+              {{ category.name }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="overflow-y-auto px-5 sm:px-6 py-5 sm:py-6">
+      {% for category in categories %}
+        <div class="full-menu-category-panel {% if not forloop.first %}hidden{% endif %} grid grid-cols-1 sm:grid-cols-2 gap-x-6 sm:gap-x-8 gap-y-4 sm:gap-y-5" id="full-menu-category-{{ category.id }}">
+          {% for item in category.items.all %}
+            {% if item.is_available %}
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-gradient-to-br from-amber-600 to-coffee-700 shrink-0 overflow-hidden">
+                  {% if item.image %}<img src="{{ item.image.url }}" class="w-full h-full object-cover">{% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-coffee-900 text-sm truncate">{{ item.name }}</p>
+                  <p class="text-xs text-coffee-900/50 truncate">{{ item.description }}</p>
+                </div>
+                <span class="font-semibold text-coffee-900 text-sm shrink-0">₱{{ item.price }}</span>
+              </div>
+            {% endif %}
+          {% empty %}
+            <p class="text-sm text-coffee-900/40">No items in this category yet.</p>
+          {% endfor %}
+        </div>
+      {% empty %}
+        <p class="text-sm text-coffee-900/40 text-center">No menu items yet.</p>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
 
 <!-- Study Hub Pass Modal -->
 <div id="studyhub-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4 py-6 overflow-y-auto">
@@ -437,12 +507,43 @@
 </div>
 
 <script>
-  // Menu category tab switching (styling only for now — wire to real filtering in Django).
+  // Menu category tab switching — shows real items per category.
   const menuTabButtons = document.querySelectorAll('.menu-tab-btn');
   menuTabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       menuTabButtons.forEach(b => b.className = 'menu-tab-btn px-6 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
       btn.className = 'menu-tab-btn px-6 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+
+      document.querySelectorAll('.menu-category-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('menu-category-' + btn.dataset.menuCategory).classList.remove('hidden');
+    });
+  });
+
+  // Full Menu modal
+  const fullMenuModal = document.getElementById('full-menu-modal');
+
+  function openFullMenuModal() {
+    fullMenuModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFullMenuModal() {
+    fullMenuModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('view-all-menu-btn').addEventListener('click', openFullMenuModal);
+  document.getElementById('close-full-menu-btn').addEventListener('click', closeFullMenuModal);
+  document.getElementById('full-menu-backdrop').addEventListener('click', closeFullMenuModal);
+
+  // Full Menu modal's own tabs (separate from homepage tabs)
+  const fullMenuTabButtons = document.querySelectorAll('.full-menu-tab-btn');
+  fullMenuTabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      fullMenuTabButtons.forEach(b => b.className = 'full-menu-tab-btn px-5 py-1.5 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
+      btn.className = 'full-menu-tab-btn px-5 py-1.5 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+
+      document.querySelectorAll('.full-menu-category-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('full-menu-category-' + btn.dataset.fullMenuCategory).classList.remove('hidden');
     });
   });
 
@@ -531,10 +632,11 @@
     stepForm.classList.remove('hidden');
   });
 
-  // Close modal on Escape key
+  // Close any open modal on Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !studyhubModal.classList.contains('hidden')) {
-      closeStudyhubModal();
+    if (e.key === 'Escape') {
+      if (!studyhubModal.classList.contains('hidden')) closeStudyhubModal();
+      if (!fullMenuModal.classList.contains('hidden')) closeFullMenuModal();
     }
   });
 </script>

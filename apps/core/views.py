@@ -11,6 +11,8 @@ from apps.studyhub.models import StudyHubPlan
 def home(request):
   return render(request, 'core/home.html', {
     'plans': StudyHubPlan.objects.filter(is_active=True),
+    'settings': CafeSettings.load(),
+    'categories': MenuCategory.objects.prefetch_related('items'),
   })
 
 def login(request):
