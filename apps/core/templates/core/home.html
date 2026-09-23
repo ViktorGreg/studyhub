@@ -46,12 +46,13 @@
       <a href="#home" class="hover:text-white transition">Home</a>
       <a href="#services" class="hover:text-white transition">Services</a>
       <a href="#menu" class="hover:text-white transition">Menu</a>
+      <a href="#studyhub" class="hover:text-white transition">Study Hub</a>
       <a href="#location" class="hover:text-white transition">Location</a>
     </nav>
 
     <div class="hidden md:flex items-center gap-3">
       <a href="#order" class="px-5 py-2 rounded-full bg-coffee-900 text-white text-sm font-medium hover:bg-coffee-700 transition">Order Takeout</a>
-      <a href="#studyhub" class="px-5 py-2 rounded-full bg-white text-coffee-900 text-sm font-medium hover:bg-coffee-50 transition">Check Study Hub</a>
+      <a href="{% url 'admin_login' %}" class="px-5 py-2 rounded-full bg-white text-coffee-900 text-sm font-medium hover:bg-coffee-50 transition">Staff login</a>
     </div>
   </div>
 </header>
@@ -83,7 +84,6 @@
     <div class="mt-8 flex flex-wrap items-center gap-3">
       <a href="#menu" class="px-6 py-2.5 rounded-full bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">View Menu</a>
       <a href="#location" class="px-6 py-2.5 rounded-full bg-coffee-900 text-white text-sm font-medium hover:bg-coffee-700 transition">Get Direction</a>
-      <a href="{% url 'admin_login' %}" class="px-6 py-2.5 rounded-full bg-white text-coffee-900 text-sm font-medium hover:bg-coffee-50 transition">Staff login</a>
     </div>
   </div>
 </section>
