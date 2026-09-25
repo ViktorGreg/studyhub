@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 'apps.users',
 'apps.menu',
 'apps.studyhub',
+'django_tailwind_cli',
 ]
 
 AUTH_USER_MODEL = 'users.Account'

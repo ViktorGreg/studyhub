@@ -1,28 +1,13 @@
+{% load tailwind_cli %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hey Jude! — Admin Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
+{% tailwind_css %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          coffee: { 50: '#FAF6F1', 100: '#F3E9DD', 700: '#4A3626', 900: '#2A1E15' },
-          amber: { 600: '#B8791E', 700: '#9C641A' },
-        },
-        fontFamily: {
-          display: ['Fraunces', 'serif'],
-          body: ['Inter', 'sans-serif'],
-        },
-      },
-    },
-  }
-</script>
 <style>
   body { font-family: 'Inter', sans-serif; }
   .font-display { font-family: 'Fraunces', serif; }
@@ -32,6 +17,14 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .glide-in { animation: glideIn 0.18s ease-out; }
+
+  /* select#category {
+    appearance: base-select;
+  }
+
+  ::picker(select) {
+    appearance: base-select;
+  } */
 </style>
 </head>
 <body class="bg-white font-body text-coffee-900">
@@ -39,7 +32,7 @@
 <div class="max-w-5xl mx-auto px-6 py-10">
 
   <!-- Header -->
-   {% if messages %}
+{% if messages %}
   {% for message in messages %}
     <div class="mb-4 px-4 py-2 rounded-lg text-sm {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
       {{ message }}
@@ -75,22 +68,25 @@
   </div>
 
   <!-- Tabs -->
-  <div class="inline-flex items-center gap-1 p-1 mb-6 rounded-full bg-coffee-100 text-sm" id="main-tabs">
-    <button type="button" data-tab="general" class="tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm">
-      General info
-    </button>
-    <button type="button" data-tab="menu" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-      Menu items
-    </button>
-    <button type="button" data-tab="studyhub" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-      Study hub
-    </button>
-    {% if request.user.role == 'ADMIN' %}
-      <button type="button" data-tab="staff" class="tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition">
-        Staff
+   <div class="flex flex-inline justify-center mb-6">
+    <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="main-tabs">
+      <button type="button" data-tab="general" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-base text-coffee-900 font-medium shadow-sm text-nowrap">
+        General <span class="hidden md:inline">info</span>
       </button>
-    {% endif %}
-  </div>
+      <button type="button" data-tab="menu" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+        Menu <span class="hidden md:inline">items</span>
+      </button>
+      <button type="button" data-tab="studyhub" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+        Study hub
+      </button>
+      {% if request.user.role == 'ADMIN' %}
+        <button type="button" data-tab="staff" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+          Staff
+        </button>
+      {% endif %}
+    </div>
+   </div>
+  
 
   <!-- General info panel -->
   <div class="rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-general">
@@ -177,8 +173,20 @@
   <!-- Menu items panel -->
   <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8 relative" id="panel-menu">
 
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-      <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="category-tabs">
+    <div class="flex flex-wrap items-center justify-between gap-1 mb-6">
+      <div class="w-full md:w-[50%] flex items-center gap-1 p-1 rounded-lg text-sm" id="category-tabs">
+        <select name="categories" id="category" class="w-full p-2 bg-coffee-100 rounded-lg border border-coffee-900/15 bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+          {% for category in categories %}
+            <option value="{{ category.name }}" data-category="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="button" id="show-add-category" class="flex items-center gap-1.5 p-2.5 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      
+      <!-- <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="category-tabs">
         {% for category in categories %}
           <div class="flex items-center">
             <button type="button" data-category="{{ category.id }}"
@@ -191,17 +199,19 @@
             </form>
           </div>
         {% endfor %}
+      </div> -->
 
-        <button type="button" id="show-add-category" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+      <div class="w-full md:w-fit flex justify-end gap-1 md:gap-2">
+        <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-full bg-coffee-900 text-white text-xs md:text-sm font-medium hover:bg-coffee-700 transition shadow-sm">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-          Add category
+          Add item
+        </button>
+
+        <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white bg-red-700 text-xs md:text-sm font-medium hover:bg-red-900 transition shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          Delete category
         </button>
       </div>
-
-      <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-5 py-2 rounded-full bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition shadow-sm">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-        Add item
-      </button>
     </div>
 
     <!-- Add category form (hidden by default) -->
@@ -287,7 +297,7 @@
                   <button type="submit" class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">Save item</button>
                   <button type="submit" formaction="{% url 'delete_item' item.id %}" formnovalidate
                     onclick="return confirm('Delete {{ item.name }}?');"
-                    class="px-4 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-medium hover:bg-red-100 transition">
+                    class="px-4 py-1.5 rounded-lg text-white bg-red-700 text-xs font-medium hover:bg-red-900 transition">
                     Delete
                   </button>
                 </div>
@@ -409,8 +419,8 @@
 
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.className = 'tab-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
-      btn.className = 'tab-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+      tabButtons.forEach(b => b.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
+      btn.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-base text-coffee-900 font-medium shadow-sm text-nowrap';
 
       Object.values(panels).forEach(id => {
         const el = document.getElementById(id);
