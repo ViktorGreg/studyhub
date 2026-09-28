@@ -130,6 +130,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+TAILWIND_CLI_SRC_CSS = "assets/css/themes.css"
+
 # Media files (user-uploaded content, e.g. menu item photos)
 
 MEDIA_URL = 'media/'

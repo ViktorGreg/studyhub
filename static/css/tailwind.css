@@ -1354,13 +1354,6 @@
     .md\:py-2 {
       padding-block: calc(var(--spacing) * 2);
     }
-    .md\:py-3 {
-      padding-block: calc(var(--spacing) * 3);
-    }
-    .md\:text-base {
-      font-size: var(--text-base);
-      line-height: var(--tw-leading, var(--text-base--line-height));
-    }
     .md\:text-sm {
       font-size: var(--text-sm);
       line-height: var(--tw-leading, var(--text-sm--line-height));

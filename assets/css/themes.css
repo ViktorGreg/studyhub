@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-coffee-50: #FAF6F1;
+  --color-coffee-100: #F3E9DD;
+  --color-coffee-700: #4A3626;
+  --color-coffee-900: #2A1E15;
+
+  --color-amber-600: #B8791E;
+  --color-amber-700: #9C641A;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+}
