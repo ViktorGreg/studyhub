@@ -11,7 +11,6 @@
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
-    --color-red-800: oklch(44.4% 0.177 26.899);
     --color-red-900: oklch(39.6% 0.141 25.723);
     --color-amber-100: oklch(96.2% 0.059 95.617);
     --color-amber-200: oklch(92.4% 0.12 95.746);
@@ -67,8 +66,8 @@
     --color-coffee-100: #F3E9DD;
     --color-coffee-700: #4A3626;
     --color-coffee-900: #2A1E15;
-    --font-display: 'Fraunces', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-display: "Fraunces", serif;
+    --font-body: "Inter", sans-serif;
   }
 }
 @layer base {
@@ -433,9 +432,6 @@
   .w-44 {
     width: calc(var(--spacing) * 44);
   }
-  .w-fit {
-    width: fit-content;
-  }
   .w-full {
     width: 100%;
   }
@@ -715,9 +711,6 @@
   .bg-red-700 {
     background-color: var(--color-red-700);
   }
-  .bg-red-800 {
-    background-color: var(--color-red-800);
-  }
   .bg-white {
     background-color: var(--color-white);
   }
@@ -792,9 +785,6 @@
   }
   .p-8 {
     padding: calc(var(--spacing) * 8);
-  }
-  .px-1 {
-    padding-inline: var(--spacing);
   }
   .px-2 {
     padding-inline: calc(var(--spacing) * 2);
@@ -1175,9 +1165,6 @@
     .hover\:bg-red-700:hover {
       background-color: var(--color-red-700);
     }
-    .hover\:bg-red-800:hover {
-      background-color: var(--color-red-800);
-    }
     .hover\:bg-red-900:hover {
       background-color: var(--color-red-900);
     }
@@ -1361,8 +1348,14 @@
     .md\:px-5 {
       padding-inline: calc(var(--spacing) * 5);
     }
+    .md\:px-6 {
+      padding-inline: calc(var(--spacing) * 6);
+    }
     .md\:py-2 {
       padding-block: calc(var(--spacing) * 2);
+    }
+    .md\:py-3 {
+      padding-block: calc(var(--spacing) * 3);
     }
     .md\:text-base {
       font-size: var(--text-base);

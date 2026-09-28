@@ -42,11 +42,7 @@
   <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
     <h1 class="font-display text-2xl text-coffee-900">Admin Dashboard</h1>
 
-    <div class="flex items-center gap-3">
-      <button type="submit" form="general-info-form" class="px-5 py-2 rounded-full text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
-        Save changes
-      </button>
-
+    <div class="flex items-center">
       <div class="relative" id="profile-menu-wrap">
         <button type="button" id="profile-menu-btn" title="Profile" class="w-10 h-10 rounded-full bg-coffee-100 flex items-center justify-center text-coffee-900/60 hover:bg-coffee-100/70 hover:text-coffee-900 transition">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -68,22 +64,27 @@
   </div>
 
   <!-- Tabs -->
-   <div class="flex flex-inline justify-center mb-6">
+   <div class="flex flex-inline justify-between items-center gap-2 mb-6">
     <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="main-tabs">
-      <button type="button" data-tab="general" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-base text-coffee-900 font-medium shadow-sm text-nowrap">
+      <button type="button" data-tab="general" class="tab-btn px-4 py-2 md:px-5 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap">
         General <span class="hidden md:inline">info</span>
       </button>
-      <button type="button" data-tab="menu" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+      <button type="button" data-tab="menu" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
         Menu <span class="hidden md:inline">items</span>
       </button>
-      <button type="button" data-tab="studyhub" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+      <button type="button" data-tab="studyhub" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
         Study hub
       </button>
       {% if request.user.role == 'ADMIN' %}
-        <button type="button" data-tab="staff" class="tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+        <button type="button" data-tab="staff" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
           Staff
         </button>
       {% endif %}
+    </div>
+    <div class="">
+      <button type="submit" form="general-info-form" class="px-5 py-3 md:px-6 rounded-full text-xs md:text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
+        Save <span class="hidden md:inline">changes</span>
+      </button>
     </div>
    </div>
   
@@ -175,41 +176,37 @@
 
     <div class="flex flex-wrap items-center justify-between gap-1 mb-6">
       <div class="w-full md:w-[50%] flex items-center gap-1 p-1 rounded-lg text-sm" id="category-tabs">
-        <select name="categories" id="category" class="w-full p-2 bg-coffee-100 rounded-lg border border-coffee-900/15 bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+        <select name="categories" id="cat-select" class="w-full p-2 bg-coffee-100 rounded-lg border border-coffee-900/15 bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
           {% for category in categories %}
-            <option value="{{ category.name }}" data-category="{{ category.id }}">{{ category.name }}</option>
+            <option value="{{ category.name }}" data-category="{{ category.id }}">
+              {{ category.name }}
+            </option>
           {% endfor %}
         </select>
 
-        <button type="button" id="show-add-category" class="flex items-center gap-1.5 p-2.5 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+        
+        <button type="button" id="delete-category-btn" title="Delete Category"
+          class="flex items-center gap-1.5 py-2 px-3 rounded-lg text-white bg-red-700 text-xs md:text-sm font-medium hover:bg-red-900 transition">
+          ✕
+        </button>
+        {% for category in categories %}
+        <form method="POST" id="delete-category-form-{{category.id}}"
+          action="{% url 'delete_category' category.id %}"
+          onsubmit="return confirm('Delete {{ category.name }} and all its items?');"
+          class="hidden">
+          {% csrf_token %}
+        </form>
+        {% endfor %}
+        <button type="button" id="show-add-category" title="Add Category"
+          class="flex items-center gap-1.5 p-2.5 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
         </button>
       </div>
-      
-      <!-- <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="category-tabs">
-        {% for category in categories %}
-          <div class="flex items-center">
-            <button type="button" data-category="{{ category.id }}"
-              class="cat-btn px-5 py-2 rounded-full {% if forloop.first %}bg-white text-coffee-900 font-medium shadow-sm{% else %}text-coffee-900/60 hover:text-coffee-900 transition{% endif %}">
-              {{ category.name }}
-            </button>
-            <form method="POST" action="{% url 'delete_category' category.id %}" onsubmit="return confirm('Delete {{ category.name }} and all its items?');">
-              {% csrf_token %}
-              <button type="submit" class="text-coffee-900/30 hover:text-red-600 text-xs px-1" title="Delete category">✕</button>
-            </form>
-          </div>
-        {% endfor %}
-      </div> -->
 
       <div class="w-full md:w-fit flex justify-end gap-1 md:gap-2">
         <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-full bg-coffee-900 text-white text-xs md:text-sm font-medium hover:bg-coffee-700 transition shadow-sm">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
           Add item
-        </button>
-
-        <button type="button" id="show-add-item" class="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-full text-white bg-red-700 text-xs md:text-sm font-medium hover:bg-red-900 transition shadow-sm">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-          Delete category
         </button>
       </div>
     </div>
@@ -419,8 +416,8 @@
 
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-base text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
-      btn.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-base text-coffee-900 font-medium shadow-sm text-nowrap';
+      tabButtons.forEach(b => b.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
+      btn.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap';
 
       Object.values(panels).forEach(id => {
         const el = document.getElementById(id);
@@ -437,20 +434,27 @@
   });
 
   // Category switching within Menu items.
-  const catButtons = document.querySelectorAll('.cat-btn');
+  const catSelect = document.getElementById('cat-select');
+  const deleteCategoryBtn = document.getElementById('delete-category-btn');
 
-  catButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      catButtons.forEach(b => b.className = 'cat-btn px-5 py-2 rounded-full text-coffee-900/60 hover:text-coffee-900 transition');
-      btn.className = 'cat-btn px-5 py-2 rounded-full bg-white text-coffee-900 font-medium shadow-sm';
+  deleteCategoryBtn.addEventListener('click', () => {
+    const selectedOption = catSelect.selectedOptions[0];
+    if (!selectedOption) return;
 
-      document.querySelectorAll('.category-panel').forEach(p => p.classList.add('hidden'));
-      const shownPanel = document.getElementById('category-panel-' + btn.dataset.category);
-      shownPanel.classList.remove('hidden');
-      shownPanel.classList.remove('glide-in');
-      void shownPanel.offsetWidth;
-      shownPanel.classList.add('glide-in');
-    });
+    const form = document.getElementById('delete-category-form-' + selectedOption.dataset.category);
+    if (form) form.requestSubmit ? form.requestSubmit() : form.submit();
+  });
+
+  catSelect.addEventListener('change', () => {
+    document.querySelectorAll('.category-panel').forEach(p => p.classList.add('hidden'));
+    const selectedOption = catSelect.selectedOptions[0];
+    const shownPanel = document.getElementById('category-panel-' + selectedOption.dataset.category);
+
+    if (!shownPanel) return;
+    shownPanel.classList.remove('hidden');
+    shownPanel.classList.remove('glide-in');
+    void shownPanel.offsetWidth;
+    shownPanel.classList.add('glide-in');
   });
 
   // Toggle Add category / Add item forms
