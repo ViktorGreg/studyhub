@@ -27,7 +27,7 @@
       <span class="font-display text-lg font-semibold">{{ settings.cafe_name|default:"Hey Jude!" }}</span>
     </div>
 
-    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-white/90">
+    <nav class="flex items-center gap-8 text-xs md:text-sm font-medium text-white/90">
       <a href="#home" class="hover:text-white transition">Home</a>
       <a href="#services" class="hover:text-white transition">Services</a>
       <a href="#menu" class="hover:text-white transition">Menu</a>
@@ -35,9 +35,9 @@
       <a href="#location" class="hover:text-white transition">Location</a>
     </nav>
 
-    <div class="hidden md:flex items-center gap-3">
-      <a href="#order" class="px-5 py-2 rounded-full bg-coffee-900 text-white text-sm font-medium hover:bg-coffee-700 transition">Order Takeout</a>
-      <a href="{% url 'admin_login' %}" class="px-5 py-2 rounded-full bg-white text-coffee-900 text-sm font-medium hover:bg-coffee-50 transition">Staff login</a>
+    <div class="flex items-center gap-3">
+      <a href="#order" class="px-5 py-2 rounded-full bg-coffee-900 text-white text-xs md:text-sm font-medium hover:bg-coffee-700 transition">Order Takeout</a>
+      <a href="{% url 'admin_login' %}" class="px-5 py-2 rounded-full bg-white text-coffee-900 text-xs md:text-sm font-medium hover:bg-coffee-50 transition">Staff login</a>
     </div>
   </div>
 </header>

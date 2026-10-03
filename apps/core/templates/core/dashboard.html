@@ -1,4 +1,5 @@
 {% load tailwind_cli %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,29 +65,29 @@
   </div>
 
   <!-- Tabs -->
-   <div class="flex flex-inline justify-between items-center gap-2 mb-6">
+  <div class="flex flex-inline justify-between items-center gap-2 mb-6">
     <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="main-tabs">
-      <button type="button" data-tab="general" class="tab-btn px-4 py-2 md:px-5 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap">
+      <button type="button" data-tab="general" class="tab-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap">
         General <span class="hidden md:inline">info</span>
       </button>
-      <button type="button" data-tab="menu" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+      <button type="button" data-tab="menu" class="tab-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
         Menu <span class="hidden md:inline">items</span>
       </button>
-      <button type="button" data-tab="studyhub" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+      <button type="button" data-tab="studyhub" class="tab-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
         Study hub
       </button>
       {% if request.user.role == 'ADMIN' %}
-        <button type="button" data-tab="staff" class="tab-btn px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+        <button type="button" data-tab="staff" class="tab-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
           Staff
         </button>
       {% endif %}
     </div>
     <div class="">
-      <button type="submit" form="general-info-form" class="px-5 py-3 md:px-6 rounded-full text-xs md:text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
+      <button type="submit" form="general-info-form" class="hover:cursor-pointer px-5 py-3 md:px-6 rounded-full text-xs md:text-sm font-medium bg-amber-600 text-white hover:bg-amber-700 transition shadow-sm">
         Save <span class="hidden md:inline">changes</span>
       </button>
     </div>
-   </div>
+  </div>
   
 
   <!-- General info panel -->
@@ -176,7 +177,9 @@
 
     <div class="flex flex-wrap items-center justify-between gap-1 mb-6">
       <div class="w-full md:w-[50%] flex items-center gap-1 p-1 rounded-lg text-sm" id="category-tabs">
-        <select name="categories" id="cat-select" class="w-full p-2 bg-coffee-100 rounded-lg border border-coffee-900/15 bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
+        <select name="categories" id="cat-select" style="appearance: base-select;"
+                class="w-full rounded-lg border bg-white text-xs md:text-sm px-4 py-2 border-coffee-900/15 bg-coffee-50 text-coffee-900
+                focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
           {% for category in categories %}
             <option value="{{ category.name }}" data-category="{{ category.id }}">
               {{ category.name }}
@@ -186,8 +189,8 @@
 
         
         <button type="button" id="delete-category-btn" title="Delete Category"
-          class="flex items-center gap-1.5 py-2 px-3 rounded-lg text-white bg-red-700 text-xs md:text-sm font-medium hover:bg-red-900 transition">
-          ✕
+          class="flex justify-center items-center gap-1.5 size-9 px-2 rounded-lg text-white bg-red-700 text-xs md:text-sm font-medium hover:bg-red-900 transition">
+          <img src="{% static 'images/close.png' %}" alt="">
         </button>
         {% for category in categories %}
         <form method="POST" id="delete-category-form-{{category.id}}"
@@ -198,8 +201,8 @@
         </form>
         {% endfor %}
         <button type="button" id="show-add-category" title="Add Category"
-          class="flex items-center gap-1.5 p-2.5 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+          class="flex justify-center items-center gap-1.5 size-9 px-2 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition">
+          <img src="{% static 'images/add.png' %}" alt="" class="">
         </button>
       </div>
 
@@ -311,9 +314,219 @@
 
   </div>
 
-  <!-- Study hub panel (placeholder) -->
+  <!-- Study hub panel -->
   <div class="hidden rounded-2xl border border-coffee-900/10 bg-white shadow-sm p-8" id="panel-studyhub">
-    <p class="text-coffee-900/50 text-sm">Study hub settings go here.</p>
+    <div class="w-full inline-flex justify-between items-center gap-6 mb-6">
+      <div class="w-full md:w-[50%] flex gap-2">
+        <div class="w-full flex-1">
+          <form action="">
+            <input type="text" name="search_bar" id="studyhub-search"
+              class="w-full px-4 py-2 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 text-xs md:text-sm
+                    focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
+              placeholder="Search">
+          </form>
+        </div>
+
+        <button type="button" id="show-studyhub-filter" title="Filter Session"
+          class="hover:cursor-pointer flex justify-center items-center gap-1.5 size-9 px-2 rounded-lg bg-amber-600 hover:bg-amber-700 transition">
+          <img src="{% static 'images/filter.png' %}" alt="" class="size-4">
+        </button>
+      </div>
+
+      <div class="inline-flex gap-2 items-center">
+        <div class="inline-flex items-center gap-1 p-1 rounded-full bg-coffee-100 text-sm" id="studyhub-tabs">
+          <button type="button" data-subtab="active" class="studyhub-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap">
+            Active
+          </button>
+          <button type="button" data-subtab="pending" class="studyhub-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+            Pending
+          </button>
+          <button type="button" data-subtab="settings" class="studyhub-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition">
+            Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="" id="studyhub-active">
+      <div class="flex flex-col gap-4">
+        {% for session in sessions %}
+        <!-- walk in section -->
+        <div class="flex flex-col">
+          <h2 class="text-base font-semibold text-coffee-900 mb-4">Walk In</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
+              <div class="inline-flex w-full justify-between items-center gap-2">
+                <div class="inline-flex gap-2">
+                  <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">cFd8sa</h2>
+                  <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
+                    done
+                  </div>
+                </div>
+
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
+              </div>
+              <div class="inline-flex justify-between items-end">
+                <div class="">
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">Firstname Lastname</p>
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">+63 987 6543 210</p>
+                </div>
+                <div class="">
+                  <button type="button" title="Finish Session"
+                  class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+                    Finish
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+          </div>
+        </div>
+
+        <!-- day pass section -->
+        <div class="flex flex-col">
+          <h2 class="text-base font-semibold text-coffee-900 mb-4">Day Pass</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
+              <div class="inline-flex w-full justify-between items-center gap-2">
+                <div class="inline-flex gap-2">
+                  <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">cFd8sa</h2>
+                  <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
+                    done
+                  </div>
+                </div>
+
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends at 10pm</p>
+              </div>
+              <div class="inline-flex justify-between items-end">
+                <div class="">
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">Firstname Lastname</p>
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">+63 987 6543 210</p>
+                </div>
+                <div class="">
+                  <button type="button" title="Finish Session"
+                  class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+                    Finish
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+          </div>
+        </div>
+
+        <!-- Week pass section -->
+        <div class="flex flex-col">
+          <h2 class="text-base font-semibold text-coffee-900 mb-4">Week Pass</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
+              <div class="inline-flex w-full justify-between items-center gap-2">
+                <div class="inline-flex gap-2">
+                  <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">cFd8sa</h2>
+                  <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
+                    done
+                  </div>
+                </div>
+
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 7 days</p>
+              </div>
+              <div class="inline-flex justify-between items-end">
+                <div class="">
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">Firstname Lastname</p>
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">+63 987 6543 210</p>
+                </div>
+                <div class="">
+                  <button type="button" title="Finish Session"
+                  class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+                    Finish
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+          </div>
+        </div>
+
+        <!-- Month pass section -->
+        <div class="flex flex-col">
+          <h2 class="text-base font-semibold text-coffee-900 mb-4">Month Pass</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
+              <div class="inline-flex w-full justify-between items-center gap-2">
+                <div class="inline-flex gap-2">
+                  <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">cFd8sa</h2>
+                  <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
+                    done
+                  </div>
+                </div>
+
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 28 days</p>
+              </div>
+              <div class="inline-flex justify-between items-end">
+                <div class="">
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">Firstname Lastname</p>
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">+63 987 6543 210</p>
+                </div>
+                <div class="">
+                  <button type="button" title="Finish Session"
+                  class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+                    Finish
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+            <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+          </div>
+        </div>
+        {% empty %}
+        <p class="text-sm text-coffee-900/40">No active sessions yet.</p>
+        {% endfor %}  
+      </div>
+    </div>
+
+    <!-- bookings -->
+    <div class="hidden flex-col" id="studyhub-pending">
+      <h2 class="text-base font-semibold text-coffee-900 mb-4">Bookings</h2>
+      {% for booking in bookings %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div class="w-full inline-flex gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
+          <div class="flex flex-col w-full gap-2">
+            <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">{{booking.code}}</h2>
+            <div class="">
+              <p class="text-xs font-medium text-coffee-900/70 mb-1">Firstname Lastname</p>
+              <p class="text-xs font-medium text-coffee-900/70 mb-1">+63 987 6543 210</p>
+            </div>
+          </div>
+          <div class="flex flex-col justify-between">
+            <p class="text-xs font-medium text-coffee-900/70 mb-1 text-nowrap">Week Pass</p>
+            <button type="button" title="Start Session"
+            class="px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+              Start
+            </button>
+          </div>
+        </div>
+        
+        <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+        <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"></div>
+      </div>
+      {% empty %}
+      <p class="text-sm text-coffee-900/40">No bookings made yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- settings -->
+    <div class="hidden flex-col" id="studyhub-settings">
+      <h2 class="text-base font-semibold text-coffee-900 mb-4">Settings</h2>
+    </div>
+
   </div>
 
   <!-- Staff panel -->
@@ -414,24 +627,37 @@
   const tabButtons = document.querySelectorAll('.tab-btn');
   const panels = { general: 'panel-general', menu: 'panel-menu', studyhub: 'panel-studyhub', staff: 'panel-staff' };
 
+  function activateTab(tabName) {
+    tabButtons.forEach(b => b.className = 'tab-btn hover:cursor-pointer px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
+    const activeBtn = document.querySelector('.tab-btn[data-tab="' + tabName +'"]');
+
+    if (!activeBtn) return;
+
+    activeBtn.className = 'tab-btn hover:cursor-pointer px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap';
+    
+    Object.values(panels).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+  
+    const shownPanel = document.getElementById(panels[tabName]);
+    if (!shownPanel) return; // tab has no matching panel (e.g. staff hidden for non-admins)
+    shownPanel.classList.remove('hidden');
+    shownPanel.classList.remove('glide-in');
+    void shownPanel.offsetWidth; // restart animation
+    shownPanel.classList.add('glide-in');
+
+    localStorage.setItem('activeTab', tabName);
+  };
+
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
-      btn.className = 'tab-btn px-4 py-2 md:px-5 md:py-2 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap';
-
-      Object.values(panels).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('hidden');
-      });
-
-      const shownPanel = document.getElementById(panels[btn.dataset.tab]);
-      if (!shownPanel) return; // tab has no matching panel (e.g. staff hidden for non-admins)
-      shownPanel.classList.remove('hidden');
-      shownPanel.classList.remove('glide-in');
-      void shownPanel.offsetWidth; // restart animation
-      shownPanel.classList.add('glide-in');
+      activateTab(btn.dataset.tab);
     });
   });
+
+  const savedTab = localStorage.getItem('activeTab');
+  activateTab(savedTab && panels[savedTab] ? savedTab : 'general');
 
   // Category switching within Menu items.
   const catSelect = document.getElementById('cat-select');
@@ -464,6 +690,38 @@
   document.getElementById('show-add-item').addEventListener('click', () => {
     document.getElementById('add-item-form').classList.toggle('hidden');
   });
+
+  const studyHubTabBtns = document.querySelectorAll('.studyhub-btn');
+  const studyHubPanels = {
+    active: 'studyhub-active',
+    pending: 'studyhub-pending',
+    settings: 'studyhub-settings'
+  };
+
+  studyHubTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      studyHubTabBtns.forEach(b => b.className = 'studyhub-btn hover:cursor-pointer px-4 py-2 md:px-5 md:py-2 rounded-full text-xs md:text-sm text-coffee-900/60 hover:text-coffee-900 text-nowrap transition');
+      btn.className = 'studyhub-btn hover:cursor-pointer px-4 py-2 md:px-5 rounded-full bg-white text-xs md:text-sm text-coffee-900 font-medium shadow-sm text-nowrap';
+    
+      Object.values(studyHubPanels).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('flex');
+          el.classList.add('hidden');
+        }
+      });
+
+      const shownPanel = document.getElementById(studyHubPanels[btn.dataset.subtab]);
+      if (!shownPanel) return;
+      shownPanel.classList.remove('hidden');
+      shownPanel.classList.remove('glide-in');
+      void shownPanel.offsetWidth;
+      shownPanel.classList.add('flex');
+      shownPanel.classList.add('glide-in');
+
+    });
+  });
+
 
   // Staff form: toggle password visibility (same pattern as the login page).
   const staffToggleBtn = document.getElementById('toggleStaffPassword');
@@ -510,11 +768,11 @@
         const svg = btn.querySelector('svg');
 
         if (data.is_bestseller) {
-          btn.className = 'bestseller-star-btn absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md border transition bg-amber-600 border-amber-600 text-white';
+          btn.className = 'bestseller-star-btn hover:cursor-pointer absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md border transition bg-amber-600 border-amber-600 text-white';
           svg.setAttribute('fill', 'currentColor');
           btn.title = 'Remove best seller';
         } else {
-          btn.className = 'bestseller-star-btn absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md border transition bg-white border-coffee-900/15 text-coffee-900/40 hover:text-amber-600 hover:border-amber-600/40';
+          btn.className = 'bestseller-star-btn hover:cursor-pointer absolute -top-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md border transition bg-white border-coffee-900/15 text-coffee-900/40 hover:text-amber-600 hover:border-amber-600/40';
           svg.setAttribute('fill', 'none');
           btn.title = 'Mark as best seller';
         }

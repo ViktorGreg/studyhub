@@ -1152,6 +1152,9 @@
     user-select: none;
   }
   @media (hover: hover) {
+    .hover\:cursor-pointer:hover {
+      cursor: pointer;
+    }
     .hover\:border-amber-600\/40:hover {
       border-color: color-mix(in srgb, #B8791E 40%, transparent);
     }
@@ -1346,9 +1349,6 @@
   @media (width >= 48rem) {
     .md\:mb-10 {
       margin-bottom: calc(var(--spacing) * 10);
-    }
-    .md\:flex {
-      display: flex;
     }
     .md\:inline {
       display: inline;
