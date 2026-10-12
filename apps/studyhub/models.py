@@ -55,7 +55,7 @@ class Booking(models.Model):
     guest_phone = models.CharField(max_length=20, blank=True)
     booking_code = models.CharField(max_length=6, unique=True, default=generate_booking_code)
     plan = models.ForeignKey(StudyHubPlan, on_delete=models.PROTECT)
-    quantity = models.PositiveIntegerField(default=1)
+    duration_hours = models.PositiveIntegerField(default=1)
     wants_locker = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,13 +66,7 @@ class Booking(models.Model):
 
 
 class Session(models.Model):
-    STATUS_CHOICES = [
-        ('ACTIVE', 'Active'),
-        ('COMPLETED', 'Completed'),
-        ('CANCELLED', 'Cancelled'),
-    ]
-
-    booking = models.ForeignKey(Booking, on_delete=models.PROTECT)
+    booking = models.ForeignKey(Booking, on_delete=models.PROTECT, related_name='sessions')
     started_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='sessions_started')
     started_at = models.DateTimeField(auto_now_add=True)
     ended_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='sessions_ended')
