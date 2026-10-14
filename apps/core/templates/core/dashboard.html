@@ -463,13 +463,13 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label for="studyhub-capacity" class="block text-sm font-medium text-coffee-900 mb-1.5">No# of Capacity</label>
-            <input id="studyhub-capacity" name="studyhub_capacity" type="number" required placeholder="{{ studyhub_settings.max_capacity }}"
+            <input id="studyhub-capacity" name="max_capacity" type="number" required placeholder="{{ studyhub_settings.max_capacity }}"
               class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
                     focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
           </div>
           <div>
             <label for="studyhub-lockers" class="block text-sm font-medium text-coffee-900 mb-1.5">No# of Lockers</label>
-            <input id="studyhub-lockers" name="studyhub_lockers" type="number" required placeholder="{{ studyhub_settings.max_lockers }}"
+            <input id="studyhub-lockers" name="max_lockers" type="number" required placeholder="{{ studyhub_settings.max_lockers }}"
               class="w-full px-4 py-2.5 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900
                     focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition">
           </div>
@@ -777,25 +777,25 @@
     });
   });
 
-  // document.querySelector('#update-settings').forEach(btn => {
-  //   btn.addEventListener('click', async (e) => {
-  //     e.preventDefault();
-  //     const formData = new FormData();
+  document.querySelectorAll('#update-settings').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
 
-  //     formData.append('max-capacity', document.getElementById('studyhub-capacity').value);
-  //     formData.append('max-lockers', document.getElementById('studyhub-lockers').value);
+      formData.append('max_capacity', document.getElementById('studyhub-capacity').value);
+      formData.append('max_lockers', document.getElementById('studyhub-lockers').value);
 
-  //     const response = await fetch('/studyhub/settings/', {
-  //       method: 'POST',
-  //       headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
-  //       body: formData,
-  //     })
+      const response = await fetch('/studyhub/settings/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+        body: formData,
+      })
 
-  //     if (response.ok) {
-  //       window.location.reload();
-  //     }
-  //   });
-  // });
+      if (response.ok) {
+        window.location.reload();
+      }
+    });
+  });
 </script>
 
 </body>
