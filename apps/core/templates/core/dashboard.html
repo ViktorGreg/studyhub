@@ -319,8 +319,8 @@
     <div class="w-full inline-flex justify-between items-center gap-6 mb-6">
       <div class="w-full md:w-[50%] flex gap-2">
         <div class="w-full flex-1">
-          <form action="">
-            <input type="text" name="search_bar" id="studyhub-search"
+          <form action="" onsubmit="return false;">
+            <input type="text" name="search_bar" id="studyhub-search" autocomplete="off"
               class="w-full px-4 py-2 rounded-lg border border-coffee-900/15 bg-coffee-50 text-coffee-900 text-xs md:text-sm
                     focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition"
               placeholder="Search">
@@ -333,15 +333,12 @@
             <img src="{% static 'images/filter.png' %}" alt="" class="size-4">
           </button>
           <div id="studyhub-filter" class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-coffee-900/10 bg-white shadow-lg py-1.5 z-10">
-            <form action="" method="post">
-              {% for plan in plans %}
-                <div class="w-full px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition inline-flex items-center gap-2">
-                  <input type="checkbox" name="" id="">
-                  <label for="">{{ plan.name }}</label>
-                </div>
-                
-              {% endfor %}
-            </form>
+            {% for plan in plans %}
+              <div class="w-full px-4 py-2 text-sm text-coffee-900 hover:bg-coffee-50 transition inline-flex items-center gap-2">
+                <input type="checkbox" class="studyhub-plan-filter" id="{{ plan.id }}">
+                <label for="">{{ plan.name }}</label>
+              </div>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -365,51 +362,53 @@
       <div class="flex flex-col gap-4">
         <!-- walk in section -->
         {% for plan in plans %}
-        <div class="flex flex-col">
+        <div class="flex flex-col studyhub-plan-section" data-plan="{{ plan.id }}">
           <h2 class="text-base font-semibold text-coffee-900 mb-4">{{plan.name}}</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              {% for booking in plan.active_bookings %}
-              <div class="w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50">
-                <div class="inline-flex w-full justify-between items-center gap-2">
-                  <div class="inline-flex gap-2">
-                    <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">{{booking.booking_code}}</h2>
-                    <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
-                      {{booking.status}}
-                    </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {% for booking in plan.active_bookings %}
+            <div class="studyhub-card w-full flex flex-col gap-4 px-4 py-2 rounded-xl border border-coffee-900/10 bg-coffee-50"
+                 data-search="{{ booking.booking_code|lower }} {{ booking.guest_name|lower }} {{ booking.guest_phone }} {{ booking.status|lower }} {{ plan.name|lower }}">
+              <div class="inline-flex w-full justify-between items-center gap-2">
+                <div class="inline-flex gap-2">
+                  <h2 class="text-lg font-semibold text-coffee-900 uppercase tracking-widest">{{booking.booking_code}}</h2>
+                  <div class="w-fit py-1 px-2 text-green-800 text-xs rounded-sm border border-green-400 bg-green-100">
+                    {{booking.status}}
                   </div>
-                  {% if plan.name == "Walk-in Rate" %}
-                    <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
-                  {% elif plan.name == "Day Pass" %}
-                    <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
-                  {% elif plan.name == "Weekly Pass" %}
-                    <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
-                  {% elif plan.name == "Monthly Pass" %}
-                    <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
-                  {% endif %}
                 </div>
-                <div class="inline-flex justify-between items-end">
-                  <div class="">
-                    <p class="text-xs font-medium text-coffee-900/70 mb-1">{{booking.guest_name}}</p>
-                    <p class="text-xs font-medium text-coffee-900/70 mb-1">{{booking.guest_phone}}</p>
-                  </div>
-                  <div class="">
-                    <form action="{% url 'finish_session' %}" method="post">
-                      {% csrf_token %}
-                      <input type="hidden" name="booking" id="booking" value="{{booking.id}}">
-                      <button type="submit" title="Finish Session"
-                      class="finish-session px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
-                        Finish
-                      </button>
-                    </form>
-                  </div>
+                {% if plan.name == "Walk-in Rate" %}
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
+                {% elif plan.name == "Day Pass" %}
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
+                {% elif plan.name == "Weekly Pass" %}
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
+                {% elif plan.name == "Monthly Pass" %}
+                  <p class="text-right text-xs font-medium text-coffee-900/70 mb-1">ends in 00:00:00</p>
+                {% endif %}
+              </div>
+              <div class="inline-flex justify-between items-end">
+                <div class="">
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">{{booking.guest_name}}</p>
+                  <p class="text-xs font-medium text-coffee-900/70 mb-1">{{booking.guest_phone}}</p>
+                </div>
+                <div class="">
+                  <form action="{% url 'finish_session' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="booking" id="booking" value="{{booking.id}}">
+                    <button type="submit" title="Finish Session"
+                    class="finish-session px-4 py-1.5 rounded-lg bg-coffee-900 text-white text-xs font-medium hover:bg-coffee-700 transition">
+                      Finish
+                    </button>
+                  </form>
                 </div>
               </div>
-            {% empty %}
-              <p class="text-sm text-coffee-900/40">No active sessions yet.</p>
-            {% endfor %}
-          </div>
+            </div>
+          {% empty %}
+            <p class="text-sm text-coffee-900/40">No active sessions yet.</p>
+          {% endfor %}
+        </div>
         </div>
         {% endfor %}
+        <p id="studyhub-no-results" class="hidden text-sm text-coffee-900/40">No bookings match your search.</p>
       </div>
     </div>
 
@@ -672,15 +671,23 @@
 
   const studyHubFilterBtn = document.getElementById('show-studyhub-filter');
   const studyHubFilter = document.getElementById('studyhub-filter');
+  studyHubPanelOpen = false;
 
   studyHubFilterBtn.addEventListener('click', () => {
-    if (!studyHubFilter) {
+    if (!studyHubPanelOpen) {
+      studyHubPanelOpen = true;
+
       studyHubFilter.classList.remove('hidden');
+      studyHubFilter.classList.remove('glide-in');
+      studyHubFilter.classList.add('block');
+      
     } else {
+      studyHubPanelOpen = false;
+
       studyHubFilter.classList.add('hidden');
+      studyHubFilter.classList.remove('block');
     }
   });
-
 
   // Staff form: toggle password visibility (same pattern as the login page).
   const staffToggleBtn = document.getElementById('toggleStaffPassword');
@@ -739,6 +746,42 @@
     });
   });
 
+  (function () {
+    const search = document.getElementById('studyhub-search');
+    const checks = document.querySelectorAll('.studyhub-plan-filter');
+    const sections = document.querySelectorAll('.studyhub-plan-section');
+    const noResults = document.getElementById('studyhub-no-results');
+
+    function applyFilters() {
+      const terms = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+      const selected = [...checks].filter(c => c.checked).map(c => c.value);
+      let anyVisible = false;
+
+      sections.forEach(section => {
+        const planOk = selected.length === 0 || selected.includes(section.dataset.plan);
+        let visibleCards = 0;
+
+        section.querySelectorAll('.studyhub-card').forEach(card => {
+          const text  = card.dataset.search;
+          const match = terms.every(t => text.includes(t));   // every word must match
+          card.classList.toggle('hidden', !match);
+          if (match) visibleCards++;
+        });
+
+        // hide the whole plan section if its plan is unchecked,
+        // or if a search is active and nothing in it matched
+        const show = planOk && (terms.length === 0 || visibleCards > 0);
+        section.classList.toggle('hidden', !show);
+        if (show) anyVisible = true;
+      });
+
+      noResults.classList.toggle('hidden', anyVisible);
+    }
+
+    search.addEventListener('input', applyFilters);
+    checks.forEach(c => c.addEventListener('change', applyFilters));
+  })();
+  
   document.querySelectorAll('.start-session').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.preventDefault();
